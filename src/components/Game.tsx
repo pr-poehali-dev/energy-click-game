@@ -41,7 +41,10 @@ const Game = () => {
         boost2: { purchased: false, cost: 500, pointsPerClick: 10 },
         boost3: { purchased: false, cost: 1500, pointsPerClick: 50 },
         boost4: { purchased: false, cost: 5000, pointsPerClick: 100 },
-        boost5: { purchased: false, cost: 15000, pointsPerClick: 500 }
+        boost5: { purchased: false, cost: 15000, pointsPerClick: 500 },
+        boost6: { purchased: false, cost: 50000, pointsPerClick: 2000 },
+        boost7: { purchased: false, cost: 200000, pointsPerClick: 10000 },
+        boost8: { purchased: false, cost: 1000000, pointsPerClick: 50000 }
       }
     };
   });
@@ -51,6 +54,27 @@ const Game = () => {
   const [storeOpen, setStoreOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [moveOffset, setMoveOffset] = useState({ x: 0, y: 0 });
+  
+  // Эффект для создания плавающего движения интерфейса
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      // Вычисляем смещение от центра экрана
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      
+      // Нормализуем смещение для плавного движения
+      const moveX = (e.clientX - centerX) / centerX * 10;
+      const moveY = (e.clientY - centerY) / centerY * 10;
+      
+      setMoveOffset({ x: moveX, y: moveY });
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
   
   // Сохранение состояния игры
   useEffect(() => {
@@ -90,7 +114,7 @@ const Game = () => {
   const purchaseBoost = (boostId: string) => {
     const boost = clickState.boosts[boostId];
     
-    if (boost.purchased) {
+    if (!boost || boost.purchased) {
       return;
     }
     
@@ -135,10 +159,51 @@ const Game = () => {
     });
   };
 
+  // Генерация фоновых стикеров энергетика
+  const renderBackgroundCans = () => {
+    const cans = [];
+    for (let i = 0; i < 20; i++) {
+      const size = Math.random() * 30 + 20;
+      const left = Math.random() * 95; 
+      const top = Math.random() * 95;
+      const rotate = Math.random() * 360;
+      const opacity = Math.random() * 0.2 + 0.05;
+      
+      cans.push(
+        <div 
+          key={`can-${i}`} 
+          className="absolute pointer-events-none"
+          style={{
+            left: `${left}%`,
+            top: `${top}%`,
+            transform: `rotate(${rotate}deg)`,
+            opacity
+          }}
+        >
+          <img 
+            src="https://cdn.poehali.dev/files/74ef3f11-c8de-41cf-9881-86c0a5b85eeb.jpg" 
+            alt="Energy Drink"
+            style={{
+              width: `${size}px`,
+              height: 'auto'
+            }}
+            className="rounded-sm"
+          />
+        </div>
+      );
+    }
+    return cans;
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-black">
+      {/* Фоновые стикеры энергетика */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {renderBackgroundCans()}
+      </div>
+      
       {/* Фоновые элементы */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-1">
         {/* Градиентная сетка */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(67,56,202,0.05),transparent_70%)]"></div>
         
@@ -155,16 +220,16 @@ const Game = () => {
             <div key={`v-line-${i}`} className="w-px h-full bg-gradient-to-b from-transparent via-blue-500 to-transparent"></div>
           ))}
         </div>
-        
-        {/* Светящиеся точки */}
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 rounded-full bg-blue-500 opacity-70 animate-pulse"></div>
-        <div className="absolute top-3/4 left-1/3 w-2 h-2 rounded-full bg-purple-500 opacity-70 animate-pulse" style={{animationDelay: '1s'}}></div>
-        <div className="absolute top-1/2 right-1/4 w-3 h-3 rounded-full bg-cyan-400 opacity-70 animate-pulse" style={{animationDelay: '0.5s'}}></div>
-        <div className="absolute bottom-1/4 right-1/3 w-2 h-2 rounded-full bg-indigo-500 opacity-70 animate-pulse" style={{animationDelay: '1.5s'}}></div>
       </div>
 
       {/* Верхняя панель с счетчиком и кнопками */}
-      <div className="fixed top-0 left-0 right-0 p-4 flex justify-between items-center z-20">
+      <div 
+        className="fixed top-0 left-0 right-0 p-4 flex justify-between items-center z-20"
+        style={{
+          transform: `translate(${moveOffset.x * 0.7}px, ${moveOffset.y * 0.5}px)`,
+          transition: 'transform 0.2s ease-out'
+        }}
+      >
         {/* Кнопка сохранения */}
         <Button 
           onClick={handleSaveGame}
@@ -200,28 +265,36 @@ const Game = () => {
         />
       )}
       
-      {/* Основная кнопка-энергетик */}
+      {/* Основная кнопка-энергетик (без смещения при движении мыши) */}
       <div className="flex-1 flex items-center justify-center z-10 my-16">
         <Button 
           onClick={handleClick}
           className="border-0 bg-transparent hover:bg-transparent p-0 transition transform hover:scale-105 active:scale-95 relative"
         >
-          {/* Неоновый ободок */}
-          <div className="absolute inset-0 rounded-xl border-2 border-blue-500/70 shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all group-hover:shadow-[0_0_25px_rgba(59,130,246,0.7)]"></div>
+          {/* Неоновый ободок вокруг энергетика */}
+          <div className="absolute inset-0 rounded-3xl bg-transparent border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.7)] animate-pulse"></div>
           
           {/* Внутреннее свечение */}
-          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-50"></div>
+          <div className="absolute inset-0 rounded-3xl overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/20 to-pink-500/10 opacity-60"></div>
+          </div>
           
           <img 
             src="https://cdn.poehali.dev/files/74ef3f11-c8de-41cf-9881-86c0a5b85eeb.jpg" 
             alt="Red Bull" 
-            className="w-48 h-auto rounded-xl relative z-10 shadow-xl" 
+            className="w-48 h-auto rounded-3xl relative z-10 shadow-xl" 
           />
         </Button>
       </div>
       
       {/* Кнопка магазина бустов */}
-      <div className="mb-10 z-10">
+      <div 
+        className="mb-10 z-10"
+        style={{
+          transform: `translate(${moveOffset.x * 0.5}px, ${moveOffset.y * 0.3}px)`,
+          transition: 'transform 0.2s ease-out'
+        }}
+      >
         <Button 
           onClick={() => setStoreOpen(true)}
           className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-800 hover:from-blue-700 hover:to-indigo-900 text-white rounded-full border border-blue-400 shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 font-bold text-lg transition-all"
