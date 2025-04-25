@@ -185,7 +185,7 @@ const Game = () => {
       <div className="absolute top-4 left-4 z-20">
         <Button 
           onClick={handleSaveGame}
-          className="bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-800 hover:to-blue-950 border-2 border-blue-500 flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all"
+          className="bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-purple-950 border-2 border-purple-500 flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all"
         >
           <Save size={18} />
           Сохранить
