@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface PointsAnimationProps {
   value: number;
@@ -8,60 +8,36 @@ interface PointsAnimationProps {
 }
 
 const PointsAnimation: React.FC<PointsAnimationProps> = ({ value, x, y }) => {
-  const [style, setStyle] = useState({
-    left: `${x}px`,
-    top: `${y - 20}px`,
-    opacity: 1,
-    transform: 'translateY(0) scale(1)'
-  });
+  const [opacity, setOpacity] = useState(1);
+  const [scale, setScale] = useState(0.7);
+  const [yOffset, setYOffset] = useState(0);
   
   useEffect(() => {
-    // Устанавливаем начальную позицию
-    setStyle({
-      left: `${x}px`,
-      top: `${y - 20}px`,
-      opacity: 1,
-      transform: 'translateY(0) scale(1)'
-    });
+    const animationDuration = 700; // ms
+    const opacityTimer = setTimeout(() => setOpacity(0), animationDuration * 0.5);
+    const scaleTimer = setTimeout(() => setScale(1.2), animationDuration * 0.2);
+    const moveTimer = setTimeout(() => setYOffset(-30), animationDuration * 0.6);
     
-    // Анимация движения вверх, увеличения и исчезновения
-    const timer = setTimeout(() => {
-      setStyle(prev => ({
-        ...prev,
-        opacity: 0,
-        transform: 'translateY(-70px) scale(1.5)'
-      }));
-    }, 50);
-    
-    return () => clearTimeout(timer);
-  }, [x, y]);
-  
-  // Создаем эффект свечения с разными цветами в зависимости от значения
-  const getGlowColor = () => {
-    if (value >= 100) return '#8B5CF6'; // фиолетовый
-    if (value >= 50) return '#10B981';  // зеленый
-    if (value >= 10) return '#F59E0B';  // желтый
-    return '#3B82F6';                   // синий
-  };
-  
-  const glowColor = getGlowColor();
+    return () => {
+      clearTimeout(opacityTimer);
+      clearTimeout(scaleTimer);
+      clearTimeout(moveTimer);
+    };
+  }, []);
   
   return (
-    <div 
-      className="fixed z-50 pointer-events-none font-bold text-2xl transition-all duration-700 ease-out" 
-      style={style}
+    <div
+      className="fixed pointer-events-none z-50 font-bold text-transparent bg-clip-text bg-gradient-to-br from-purple-400 to-blue-500 drop-shadow-[0_2px_3px_rgba(74,222,128,0.4)]"
+      style={{
+        left: `${x}px`,
+        top: `${y + yOffset}px`,
+        transform: `translate(-50%, -50%) scale(${scale})`,
+        opacity,
+        fontSize: '1.8rem',
+        transition: 'opacity 400ms ease, transform 500ms ease, top 500ms ease',
+      }}
     >
-      <span 
-        className="bg-black/60 px-3 py-1.5 rounded-full whitespace-nowrap flex items-center justify-center border border-opacity-50 backdrop-blur-sm"
-        style={{
-          textShadow: `0 0 10px ${glowColor}, 0 0 15px ${glowColor}`,
-          boxShadow: `0 0 10px ${glowColor}80, inset 0 0 5px ${glowColor}40`,
-          borderColor: glowColor
-        }}
-      >
-        <span className="text-blue-400 mr-1.5">+</span>
-        <span className="bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">{value}</span>
-      </span>
+      +{value}
     </div>
   );
 };

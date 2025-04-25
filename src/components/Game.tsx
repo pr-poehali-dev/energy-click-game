@@ -136,78 +136,61 @@ const Game = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-between py-8 relative overflow-hidden bg-black">
-      {/* Фоновые декорации - кибер/космический стиль */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* Мерцающие частицы */}
-        <div className="absolute top-1/4 left-20 w-32 h-32 rounded-full bg-blue-500 opacity-5 animate-pulse blur-3xl"></div>
-        <div className="absolute bottom-1/3 right-20 w-48 h-48 rounded-full bg-purple-500 opacity-5 animate-pulse blur-3xl" style={{animationDelay: '1.5s'}}></div>
-        <div className="absolute top-3/4 left-1/3 w-24 h-24 rounded-full bg-cyan-400 opacity-5 animate-pulse blur-2xl" style={{animationDelay: '0.7s'}}></div>
+    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-black">
+      {/* Фоновые элементы */}
+      <div className="absolute inset-0 z-0">
+        {/* Градиентная сетка */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(67,56,202,0.05),transparent_70%)]"></div>
         
-        {/* Неоновые сетки и линии */}
-        <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-20"></div>
-        <div className="absolute top-1/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-15"></div>
-        <div className="absolute top-3/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-15"></div>
+        {/* Горизонтальные линии */}
+        <div className="absolute inset-0 flex flex-col justify-around opacity-20">
+          {[...Array(10)].map((_, i) => (
+            <div key={`h-line-${i}`} className="h-px w-full bg-gradient-to-r from-transparent via-purple-500 to-transparent"></div>
+          ))}
+        </div>
         
-        <div className="absolute top-0 bottom-0 left-1/4 w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent opacity-10"></div>
-        <div className="absolute top-0 bottom-0 right-1/4 w-px bg-gradient-to-b from-transparent via-purple-500 to-transparent opacity-10"></div>
-        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-gradient-to-b from-transparent via-cyan-400 to-transparent opacity-10"></div>
+        {/* Вертикальные линии */}
+        <div className="absolute inset-0 flex flex-row justify-around opacity-20">
+          {[...Array(10)].map((_, i) => (
+            <div key={`v-line-${i}`} className="w-px h-full bg-gradient-to-b from-transparent via-blue-500 to-transparent"></div>
+          ))}
+        </div>
         
-        {/* Абстрактные технологические узоры */}
-        <div className="absolute bottom-20 left-10 opacity-10">
-          <svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="45" stroke="#33C3F0" strokeWidth="1" />
-            <circle cx="50" cy="50" r="35" stroke="#33C3F0" strokeWidth="0.5" />
-            <circle cx="50" cy="50" r="25" stroke="#33C3F0" strokeWidth="0.5" />
-            <line x1="5" y1="50" x2="95" y2="50" stroke="#33C3F0" strokeWidth="0.5" strokeDasharray="2 4" />
-            <line x1="50" y1="5" x2="50" y2="95" stroke="#33C3F0" strokeWidth="0.5" strokeDasharray="2 4" />
-          </svg>
-        </div>
-        <div className="absolute top-20 right-10 opacity-10">
-          <svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="10" y="10" width="80" height="80" stroke="#D946EF" strokeWidth="1" />
-            <rect x="25" y="25" width="50" height="50" stroke="#D946EF" strokeWidth="0.5" />
-            <line x1="10" y1="50" x2="90" y2="50" stroke="#D946EF" strokeWidth="0.5" strokeDasharray="2 4" />
-            <line x1="50" y1="10" x2="50" y2="90" stroke="#D946EF" strokeWidth="0.5" strokeDasharray="2 4" />
-          </svg>
-        </div>
-        <div className="absolute bottom-40 right-40 opacity-10">
-          <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="50,10 90,50 50,90 10,50" stroke="#0EA5E9" strokeWidth="1" />
-            <polygon points="50,30 70,50 50,70 30,50" stroke="#0EA5E9" strokeWidth="0.5" />
-            <line x1="10" y1="50" x2="90" y2="50" stroke="#0EA5E9" strokeWidth="0.5" strokeDasharray="2 4" />
-            <line x1="50" y1="10" x2="50" y2="90" stroke="#0EA5E9" strokeWidth="0.5" strokeDasharray="2 4" />
-          </svg>
-        </div>
+        {/* Светящиеся точки */}
+        <div className="absolute top-1/4 left-1/4 w-2 h-2 rounded-full bg-blue-500 opacity-70 animate-pulse"></div>
+        <div className="absolute top-3/4 left-1/3 w-2 h-2 rounded-full bg-purple-500 opacity-70 animate-pulse" style={{animationDelay: '1s'}}></div>
+        <div className="absolute top-1/2 right-1/4 w-3 h-3 rounded-full bg-cyan-400 opacity-70 animate-pulse" style={{animationDelay: '0.5s'}}></div>
+        <div className="absolute bottom-1/4 right-1/3 w-2 h-2 rounded-full bg-indigo-500 opacity-70 animate-pulse" style={{animationDelay: '1.5s'}}></div>
       </div>
 
-      {/* Кнопка сохранения */}
-      <div className="absolute top-4 left-4 z-20">
+      {/* Верхняя панель с счетчиком и кнопками */}
+      <div className="fixed top-0 left-0 right-0 p-4 flex justify-between items-center z-20">
+        {/* Кнопка сохранения */}
         <Button 
           onClick={handleSaveGame}
-          className="bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-purple-950 border-2 border-purple-500 flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all"
+          className="bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-purple-950 border border-purple-500 flex items-center gap-2 px-3 py-2 rounded-lg shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all"
         >
-          <Save size={18} />
+          <Save size={16} />
           Сохранить
         </Button>
-      </div>
-
-      {/* Счётчик очков и кнопка настроек */}
-      <div className="fixed top-6 right-6 z-20 flex gap-3 items-center">
-        <Button 
-          onClick={() => setSettingsOpen(true)}
-          className="bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-purple-950 border-2 border-purple-500 rounded-lg p-2 shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all"
-        >
-          <Settings size={20} className="text-purple-100" />
-        </Button>
-
-        <div className="bg-zinc-900/80 border-2 border-blue-600 rounded-lg px-4 py-2 backdrop-blur-sm">
-          <div className="text-xl font-mono font-bold text-blue-400">
-            {clickState.points.toString().padStart(6, '0')}
+        
+        {/* Счетчик и кнопка настроек */}
+        <div className="flex items-center gap-3">
+          <Button 
+            onClick={() => setSettingsOpen(true)}
+            className="bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-purple-950 border border-purple-500 p-2 rounded-lg shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all"
+          >
+            <Settings size={18} className="text-purple-100" />
+          </Button>
+          
+          <div className="bg-zinc-900/90 border border-blue-600 rounded-lg px-4 py-2 backdrop-blur-md">
+            <div className="text-xl font-mono font-bold text-blue-400">
+              {clickState.points.toString().padStart(6, '0')}
+            </div>
           </div>
         </div>
       </div>
-        
+      
       {/* Анимация очков */}
       {showAnimation && (
         <PointsAnimation 
@@ -216,37 +199,37 @@ const Game = () => {
           y={animationPosition.y}
         />
       )}
-        
-      {/* Основная кнопка-энергетик с ободком */}
-      <div className="flex-1 flex items-center justify-center z-10">
+      
+      {/* Основная кнопка-энергетик */}
+      <div className="flex-1 flex items-center justify-center z-10 my-16">
         <Button 
           onClick={handleClick}
-          className="border-0 bg-transparent hover:bg-transparent p-0 transition transform hover:scale-105 active:scale-95 relative group"
+          className="border-0 bg-transparent hover:bg-transparent p-0 transition transform hover:scale-105 active:scale-95 relative"
         >
-          {/* Ободок вокруг кнопки */}
-          <div className="absolute inset-0 rounded-lg border-2 border-blue-500 opacity-70 group-hover:opacity-100 group-hover:border-blue-400 transition-all group-hover:blur-[1px] shadow-lg shadow-blue-500/30 group-hover:shadow-blue-400/50"></div>
+          {/* Неоновый ободок */}
+          <div className="absolute inset-0 rounded-xl border-2 border-blue-500/70 shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all group-hover:shadow-[0_0_25px_rgba(59,130,246,0.7)]"></div>
           
           {/* Внутреннее свечение */}
-          <div className="absolute inset-2 rounded-lg bg-blue-500/10 opacity-0 group-hover:opacity-30 transition-opacity"></div>
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-50"></div>
           
           <img 
             src="https://cdn.poehali.dev/files/74ef3f11-c8de-41cf-9881-86c0a5b85eeb.jpg" 
             alt="Red Bull" 
-            className="w-48 h-auto rounded-lg relative z-10" 
+            className="w-48 h-auto rounded-xl relative z-10 shadow-xl" 
           />
         </Button>
       </div>
-        
-      {/* Кнопка магазина бустов - стильный дизайн */}
-      <div className="mt-8 mb-4 z-10">
+      
+      {/* Кнопка магазина бустов */}
+      <div className="mb-10 z-10">
         <Button 
           onClick={() => setStoreOpen(true)}
-          className="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-800 hover:from-cyan-700 hover:to-blue-900 text-white rounded-full border-2 border-cyan-500 shadow-lg shadow-cyan-700/20 hover:shadow-cyan-700/40 font-bold text-lg transition-all"
+          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-800 hover:from-blue-700 hover:to-indigo-900 text-white rounded-full border border-blue-400 shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 font-bold text-lg transition-all"
         >
           <span className="mr-2">🛒</span> Купить Нью дринк
         </Button>
       </div>
-        
+      
       {/* Магазин бустов */}
       <Dialog open={storeOpen} onOpenChange={setStoreOpen}>
         <DialogContent className="bg-zinc-900 border-blue-600 text-white">
