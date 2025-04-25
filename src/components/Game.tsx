@@ -6,6 +6,7 @@ import BoostStore from './BoostStore';
 import PointsAnimation from './PointsAnimation';
 import Score from './Score';
 import { toast } from '@/components/ui/use-toast';
+import { Save } from 'lucide-react';
 
 interface ClickState {
   points: number;
@@ -123,16 +124,51 @@ const Game = () => {
     });
   };
 
+  const handleSaveGame = () => {
+    localStorage.setItem('clickerGameState', JSON.stringify(clickState));
+    toast({
+      title: "Сохранено",
+      description: "Твой прогресс успешно сохранен!",
+      duration: 2000,
+      className: "bg-green-600 text-white border-green-500"
+    });
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-between py-8 relative overflow-hidden">
-      {/* Фоновые декорации */}
+    <div className="min-h-screen flex flex-col items-center justify-between py-8 relative overflow-hidden bg-black">
+      {/* Фоновые декорации - новый стиль */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute top-1/4 left-10 opacity-10 animate-pulse">
-          <img src="https://images.unsplash.com/photo-1619982570592-125ba7e257a9?w=200&h=200&fit=crop" alt="" className="w-40 h-40" />
+        {/* Вращающиеся частицы */}
+        <div className="absolute top-1/4 left-20 w-32 h-32 rounded-full bg-blue-600 opacity-5 animate-pulse blur-3xl"></div>
+        <div className="absolute bottom-1/3 right-20 w-48 h-48 rounded-full bg-blue-400 opacity-5 animate-pulse blur-3xl" style={{animationDelay: '1.5s'}}></div>
+        
+        {/* Светящиеся линии */}
+        <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-20"></div>
+        <div className="absolute top-0 bottom-0 left-1/4 w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent opacity-10"></div>
+        <div className="absolute top-0 bottom-0 right-1/4 w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent opacity-10"></div>
+        
+        {/* Абстрактные формы */}
+        <div className="absolute bottom-20 left-10 opacity-10">
+          <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="40" stroke="#33C3F0" strokeWidth="2" />
+          </svg>
         </div>
-        <div className="absolute top-2/3 right-10 opacity-10 animate-pulse" style={{animationDelay: '1s'}}>
-          <img src="https://images.unsplash.com/photo-1527960392543-80cd0fa46382?w=200&h=200&fit=crop" alt="" className="w-32 h-32" />
+        <div className="absolute top-20 right-10 opacity-10">
+          <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="20" width="60" height="60" stroke="#33C3F0" strokeWidth="2" />
+          </svg>
         </div>
+      </div>
+
+      {/* Кнопка сохранения */}
+      <div className="absolute top-4 left-4 z-20">
+        <Button 
+          onClick={handleSaveGame}
+          className="bg-blue-700 hover:bg-blue-800 border-2 border-blue-500 flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg hover:shadow-blue-500/20 transition-all"
+        >
+          <Save size={18} />
+          Сохранить
+        </Button>
       </div>
 
       {/* Счётчик очков */}
@@ -147,27 +183,33 @@ const Game = () => {
         />
       )}
         
-      {/* Основная кнопка-энергетик */}
+      {/* Основная кнопка-энергетик с ободком */}
       <div className="flex-1 flex items-center justify-center z-10">
         <Button 
           onClick={handleClick}
-          className="border-0 bg-transparent hover:bg-transparent p-0 transition transform hover:scale-105 active:scale-95"
+          className="border-0 bg-transparent hover:bg-transparent p-0 transition transform hover:scale-105 active:scale-95 relative group"
         >
+          {/* Ободок вокруг кнопки */}
+          <div className="absolute inset-0 rounded-lg border-2 border-blue-500 opacity-70 group-hover:opacity-100 group-hover:border-blue-400 transition-all group-hover:blur-[1px] shadow-lg shadow-blue-500/30 group-hover:shadow-blue-400/50"></div>
+          
+          {/* Внутреннее свечение */}
+          <div className="absolute inset-2 rounded-lg bg-blue-500/10 opacity-0 group-hover:opacity-30 transition-opacity"></div>
+          
           <img 
             src="https://cdn.poehali.dev/files/74ef3f11-c8de-41cf-9881-86c0a5b85eeb.jpg" 
             alt="Red Bull" 
-            className="w-48 h-auto rounded-lg" 
+            className="w-48 h-auto rounded-lg relative z-10" 
           />
         </Button>
       </div>
         
-      {/* Кнопка магазина бустов */}
+      {/* Кнопка магазина бустов - новый стиль */}
       <div className="mt-8 mb-4 z-10">
         <Button 
           onClick={() => setStoreOpen(true)}
-          className="px-6 py-3 bg-blue-700 hover:bg-blue-800 text-white rounded-full border-2 border-blue-500 shadow-lg font-bold text-lg"
+          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white rounded-full border-2 border-blue-500 shadow-lg shadow-blue-700/20 hover:shadow-blue-700/40 font-bold text-lg transition-all"
         >
-          Купить Нью дринк 🛒
+          <span className="mr-2">🛒</span> Купить Нью дринк
         </Button>
       </div>
         
