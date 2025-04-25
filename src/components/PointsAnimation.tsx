@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface PointsAnimationProps {
   value: number;
@@ -8,36 +8,44 @@ interface PointsAnimationProps {
 }
 
 const PointsAnimation: React.FC<PointsAnimationProps> = ({ value, x, y }) => {
+  const [position, setPosition] = useState({ top: y - 30, left: x - 20 });
   const [opacity, setOpacity] = useState(1);
-  const [scale, setScale] = useState(0.7);
-  const [yOffset, setYOffset] = useState(0);
+  const [scale, setScale] = useState(1);
   
   useEffect(() => {
-    const animationDuration = 700; // ms
-    const opacityTimer = setTimeout(() => setOpacity(0), animationDuration * 0.5);
-    const scaleTimer = setTimeout(() => setScale(1.2), animationDuration * 0.2);
-    const moveTimer = setTimeout(() => setYOffset(-30), animationDuration * 0.6);
+    // Начальное положение немного выше места клика
+    setPosition({ top: y - 30, left: x - 20 });
+    setOpacity(1);
+    setScale(1);
+    
+    // Анимация движения вверх и затухания
+    const timer = setTimeout(() => {
+      setPosition(prev => ({ ...prev, top: prev.top - 80 }));
+      setOpacity(0);
+      setScale(1.5);
+    }, 50);
     
     return () => {
-      clearTimeout(opacityTimer);
-      clearTimeout(scaleTimer);
-      clearTimeout(moveTimer);
+      clearTimeout(timer);
     };
-  }, []);
+  }, [x, y]);
   
   return (
-    <div
-      className="fixed pointer-events-none z-50 font-bold text-transparent bg-clip-text bg-gradient-to-br from-purple-400 to-blue-500 drop-shadow-[0_2px_3px_rgba(74,222,128,0.4)]"
+    <div 
+      className="fixed pointer-events-none z-50 select-none"
       style={{
-        left: `${x}px`,
-        top: `${y + yOffset}px`,
-        transform: `translate(-50%, -50%) scale(${scale})`,
+        top: position.top,
+        left: position.left,
         opacity,
-        fontSize: '1.8rem',
-        transition: 'opacity 400ms ease, transform 500ms ease, top 500ms ease',
+        transform: `scale(${scale})`,
+        transition: 'top 0.7s ease-out, opacity 0.7s ease-out, transform 0.7s ease-out'
       }}
     >
-      +{value}
+      <div className="text-2xl font-bold whitespace-nowrap">
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" style={{ textShadow: '0 0 5px #fff, 0 0 10px #fff' }}>
+          +{value}
+        </span>
+      </div>
     </div>
   );
 };

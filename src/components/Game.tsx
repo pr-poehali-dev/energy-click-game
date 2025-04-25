@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import BoostStore from './BoostStore';
 import PointsAnimation from './PointsAnimation';
-import Score from './Score';
 import { toast } from '@/components/ui/use-toast';
 import { Save, Settings } from 'lucide-react';
 
@@ -112,14 +111,20 @@ const Game = () => {
   };
 
   const purchaseBoost = (boostId: string) => {
+    if (!clickState.boosts[boostId]) {
+      console.error(`Буст ${boostId} не найден`);
+      return;
+    }
+    
     const boost = clickState.boosts[boostId];
     
-    if (!boost || boost.purchased) {
+    if (boost.purchased) {
+      console.log(`Буст ${boostId} уже куплен`);
       return;
     }
     
     if (clickState.points < boost.cost) {
-      setErrorMessage('Не хватает средств, плохо бухал!');
+      setErrorMessage('Не хватает очков для покупки');
       
       setTimeout(() => {
         setErrorMessage('');
@@ -155,69 +160,69 @@ const Game = () => {
       title: "Сохранено",
       description: "Твой прогресс успешно сохранен!",
       duration: 2000,
-      className: "bg-green-600 text-white border-green-500"
     });
   };
 
-  // Генерация фоновых стикеров энергетика
-  const renderBackgroundCans = () => {
-    const cans = [];
-    for (let i = 0; i < 20; i++) {
-      const size = Math.random() * 30 + 20;
-      const left = Math.random() * 95; 
-      const top = Math.random() * 95;
-      const rotate = Math.random() * 360;
-      const opacity = Math.random() * 0.2 + 0.05;
-      
-      cans.push(
-        <div 
-          key={`can-${i}`} 
-          className="absolute pointer-events-none"
-          style={{
-            left: `${left}%`,
-            top: `${top}%`,
-            transform: `rotate(${rotate}deg)`,
-            opacity
-          }}
-        >
-          <img 
-            src="https://cdn.poehali.dev/files/74ef3f11-c8de-41cf-9881-86c0a5b85eeb.jpg" 
-            alt="Energy Drink"
+  // Создание зловещего неонового лица в стиле с изображения
+  const renderEvilFace = () => {
+    return (
+      <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+        <div className="relative w-96 h-96">
+          {/* Глаза */}
+          <div 
+            className="absolute top-1/4 left-1/4 w-16 h-12 transform -rotate-12"
             style={{
-              width: `${size}px`,
-              height: 'auto'
+              boxShadow: '0 0 15px 5px rgba(255,255,255,0.3)',
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%)',
+              clipPath: 'polygon(0% 0%, 100% 20%, 80% 100%, 20% 100%)'
             }}
-            className="rounded-sm"
-          />
+          ></div>
+          <div 
+            className="absolute top-1/4 right-1/4 w-16 h-12 transform rotate-12"
+            style={{
+              boxShadow: '0 0 15px 5px rgba(255,255,255,0.3)',
+              background: 'linear-gradient(225deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%)',
+              clipPath: 'polygon(0% 20%, 100% 0%, 80% 100%, 20% 100%)'
+            }}
+          ></div>
+          
+          {/* Улыбка */}
+          <div 
+            className="absolute bottom-1/4 left-1/2 w-64 h-20 transform -translate-x-1/2"
+            style={{
+              boxShadow: '0 0 15px 5px rgba(255,255,255,0.3)',
+              background: 'linear-gradient(0deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 100%)',
+              clipPath: 'polygon(0% 0%, 100% 0%, 80% 100%, 20% 100%)',
+              borderRadius: '50%'
+            }}
+          ></div>
         </div>
-      );
-    }
-    return cans;
+      </div>
+    );
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-black">
-      {/* Фоновые стикеры энергетика */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        {renderBackgroundCans()}
+      {/* Зловещее лицо на фоне */}
+      <div className="absolute inset-0 z-0 opacity-20">
+        <img 
+          src="https://cdn.poehali.dev/files/342457e9-6834-47f5-9e76-be49daccb778.jpg"
+          alt="Evil Face"
+          className="w-full h-full object-contain"
+        />
       </div>
       
-      {/* Фоновые элементы */}
-      <div className="absolute inset-0 z-1">
-        {/* Градиентная сетка */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(67,56,202,0.05),transparent_70%)]"></div>
-        
-        {/* Горизонтальные линии */}
-        <div className="absolute inset-0 flex flex-col justify-around opacity-20">
-          {[...Array(10)].map((_, i) => (
-            <div key={`h-line-${i}`} className="h-px w-full bg-gradient-to-r from-transparent via-purple-500 to-transparent"></div>
+      {/* Неоновые линии */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 flex flex-col justify-around opacity-10">
+          {[...Array(15)].map((_, i) => (
+            <div key={`h-line-${i}`} className="h-px w-full bg-gradient-to-r from-transparent via-white to-transparent"></div>
           ))}
         </div>
         
-        {/* Вертикальные линии */}
-        <div className="absolute inset-0 flex flex-row justify-around opacity-20">
-          {[...Array(10)].map((_, i) => (
-            <div key={`v-line-${i}`} className="w-px h-full bg-gradient-to-b from-transparent via-blue-500 to-transparent"></div>
+        <div className="absolute inset-0 flex flex-row justify-around opacity-10">
+          {[...Array(15)].map((_, i) => (
+            <div key={`v-line-${i}`} className="w-px h-full bg-gradient-to-b from-transparent via-white to-transparent"></div>
           ))}
         </div>
       </div>
@@ -233,7 +238,8 @@ const Game = () => {
         {/* Кнопка сохранения */}
         <Button 
           onClick={handleSaveGame}
-          className="bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-purple-950 border border-purple-500 flex items-center gap-2 px-3 py-2 rounded-lg shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all"
+          variant="outline"
+          className="border-white/50 hover:border-white bg-transparent text-white hover:bg-white/10 flex items-center gap-2 px-3 py-2 shadow-[0_0_15px_rgba(255,255,255,0.2)]"
         >
           <Save size={16} />
           Сохранить
@@ -243,13 +249,14 @@ const Game = () => {
         <div className="flex items-center gap-3">
           <Button 
             onClick={() => setSettingsOpen(true)}
-            className="bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-purple-950 border border-purple-500 p-2 rounded-lg shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all"
+            variant="outline"
+            className="border-white/50 hover:border-white bg-transparent text-white hover:bg-white/10 p-2 shadow-[0_0_15px_rgba(255,255,255,0.2)]"
           >
-            <Settings size={18} className="text-purple-100" />
+            <Settings size={18} />
           </Button>
           
-          <div className="bg-zinc-900/90 border border-blue-600 rounded-lg px-4 py-2 backdrop-blur-md">
-            <div className="text-xl font-mono font-bold text-blue-400">
+          <div className="border border-white/30 rounded-lg px-4 py-2 bg-black/50 backdrop-blur-md shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+            <div className="text-xl font-mono font-bold text-white">
               {clickState.points.toString().padStart(6, '0')}
             </div>
           </div>
@@ -265,25 +272,28 @@ const Game = () => {
         />
       )}
       
-      {/* Основная кнопка-энергетик (без смещения при движении мыши) */}
-      <div className="flex-1 flex items-center justify-center z-10 my-16">
+      {/* Основная кнопка для клика */}
+      <div className="flex-1 flex items-center justify-center z-10">
         <Button 
           onClick={handleClick}
-          className="border-0 bg-transparent hover:bg-transparent p-0 transition transform hover:scale-105 active:scale-95 relative"
+          className="border-0 bg-transparent hover:bg-transparent p-0 transition transform hover:scale-105 active:scale-95 relative group"
         >
-          {/* Неоновый ободок вокруг энергетика */}
-          <div className="absolute inset-0 rounded-3xl bg-transparent border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.7)] animate-pulse"></div>
+          {/* Неоновая обводка */}
+          <div className="absolute inset-0 rounded-full border border-white/30 opacity-0 group-hover:opacity-100 transition-opacity shadow-[0_0_20px_rgba(255,255,255,0.5)]"></div>
           
           {/* Внутреннее свечение */}
-          <div className="absolute inset-0 rounded-3xl overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/20 to-pink-500/10 opacity-60"></div>
+          <div className="absolute inset-0 rounded-full overflow-hidden opacity-0 group-hover:opacity-30 transition-opacity">
+            <div className="absolute inset-0 bg-white"></div>
           </div>
           
-          <img 
-            src="https://cdn.poehali.dev/files/74ef3f11-c8de-41cf-9881-86c0a5b85eeb.jpg" 
-            alt="Red Bull" 
-            className="w-48 h-auto rounded-3xl relative z-10 shadow-xl" 
-          />
+          {/* Изображение с неоновым лицом */}
+          <div className="w-64 h-64 flex items-center justify-center relative">
+            <img 
+              src="https://cdn.poehali.dev/files/342457e9-6834-47f5-9e76-be49daccb778.jpg"
+              alt="Evil Face"
+              className="w-full h-full object-contain transition-all opacity-70 group-hover:opacity-100"
+            />
+          </div>
         </Button>
       </div>
       
@@ -297,20 +307,21 @@ const Game = () => {
       >
         <Button 
           onClick={() => setStoreOpen(true)}
-          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-800 hover:from-blue-700 hover:to-indigo-900 text-white rounded-full border border-blue-400 shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 font-bold text-lg transition-all"
+          variant="outline"
+          className="px-6 py-3 bg-transparent border border-white/50 hover:border-white text-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:bg-white/10 font-bold text-lg transition-all"
         >
-          <span className="mr-2">🛒</span> Купить Нью дринк
+          <span className="mr-2">👻</span> Магазин Бустов
         </Button>
       </div>
       
       {/* Магазин бустов */}
       <Dialog open={storeOpen} onOpenChange={setStoreOpen}>
-        <DialogContent className="bg-zinc-900 border-blue-600 text-white">
+        <DialogContent className="bg-black border-white/20 text-white shadow-[0_0_25px_rgba(255,255,255,0.2)]">
           <DialogHeader>
-            <DialogTitle className="text-center text-2xl font-bold text-blue-400">
+            <DialogTitle className="text-center text-2xl font-bold text-white">
               Магазин Бустов
             </DialogTitle>
-            <DialogDescription className="text-center text-gray-300">
+            <DialogDescription className="text-center text-white/70">
               Покупай бусты, чтобы получать больше очков за клик!
             </DialogDescription>
           </DialogHeader>
@@ -322,7 +333,7 @@ const Game = () => {
           />
           
           {errorMessage && (
-            <div className="mt-4 p-2 bg-red-900/70 border border-red-600 rounded-md text-center text-red-300 animate-pulse">
+            <div className="mt-4 p-2 border border-white/30 rounded-md text-center text-white/80 animate-pulse">
               {errorMessage}
             </div>
           )}
@@ -331,19 +342,19 @@ const Game = () => {
 
       {/* Диалог настроек */}
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-        <DialogContent className="bg-zinc-900 border-purple-600 text-white">
+        <DialogContent className="bg-black border-white/20 text-white shadow-[0_0_25px_rgba(255,255,255,0.2)]">
           <DialogHeader>
-            <DialogTitle className="text-center text-2xl font-bold text-purple-400">
+            <DialogTitle className="text-center text-2xl font-bold text-white">
               Настройки
             </DialogTitle>
           </DialogHeader>
           
           <div className="py-4 text-center">
-            <p className="text-gray-300 mb-4">
+            <p className="text-white/70 mb-4">
               Здесь будут настройки в будущих обновлениях
             </p>
-            <div className="p-3 rounded-lg border border-purple-600 bg-zinc-800/50">
-              <p className="text-purple-300 font-medium">
+            <div className="p-3 rounded-lg border border-white/30 bg-black/50">
+              <p className="text-white/80 font-medium">
                 Разработчик: телеграмм @origcrime
               </p>
             </div>

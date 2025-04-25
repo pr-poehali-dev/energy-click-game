@@ -20,31 +20,32 @@ const Boost: React.FC<BoostProps> = ({
 }) => {
   return (
     <div className={`p-3 rounded-lg border ${purchased 
-      ? 'bg-blue-950/30 border-blue-700' 
+      ? 'bg-black border-white/30' 
       : affordable 
-        ? 'bg-zinc-800/80 border-blue-600 hover:bg-zinc-700/80' 
-        : 'bg-zinc-800/50 border-zinc-700'
+        ? 'bg-black border-white/50 hover:border-white' 
+        : 'bg-black border-white/20'
       } transition-all duration-300`}
     >
       <div className="flex justify-between items-center">
         <div className="flex gap-3 items-center">
-          <div className="text-blue-400 opacity-80">
+          <div className={`${affordable && !purchased ? 'text-white' : 'text-white/50'} opacity-80`}>
             {icon || <Zap size={20} />}
           </div>
           <div>
-            <h3 className="text-lg font-bold text-blue-400">{name}</h3>
-            <p className="text-sm text-gray-300">{description}</p>
-            <p className="text-xs text-blue-300 mt-1">+{pointsPerClick} за клик</p>
+            <h3 className={`text-lg font-bold ${affordable && !purchased ? 'text-white' : 'text-white/50'}`}>{name}</h3>
+            <p className="text-sm text-white/70">{description}</p>
+            <p className="text-xs text-white/80 mt-1">+{pointsPerClick} за клик</p>
           </div>
         </div>
         <Button
           onClick={() => onPurchase(id)}
           disabled={purchased || !affordable}
+          variant="outline"
           className={`ml-4 ${purchased 
-            ? 'bg-green-600 hover:bg-green-600 cursor-not-allowed opacity-80' 
+            ? 'border-white/30 text-white/30 cursor-not-allowed' 
             : affordable 
-              ? 'bg-blue-600 hover:bg-blue-700' 
-              : 'bg-zinc-700 hover:bg-zinc-700 cursor-not-allowed opacity-50'
+              ? 'border-white text-white hover:bg-white/10' 
+              : 'border-white/30 text-white/30 cursor-not-allowed'
             }`}
         >
           {purchased ? 'Куплено' : `${cost} очков`}
@@ -73,24 +74,30 @@ const BoostStore: React.FC<BoostStoreProps> = ({ boosts, points, onPurchase }) =
   const basicBoostItems = [
     { 
       id: 'boost1', 
-      name: 'Буст Алкоголика', 
-      description: 'Удвоенная продуктивность!', 
+      name: 'Злой Смайл', 
+      description: 'Двойная энергия', 
       icon: <Zap size={20} />,
-      ...boosts.boost1 
+      cost: 100,
+      pointsPerClick: 5,
+      purchased: boosts.boost1?.purchased || false
     },
     { 
       id: 'boost2', 
-      name: 'Нью Дринк Pro', 
-      description: 'Напиток со стимулятором', 
+      name: 'Неоновый Призрак', 
+      description: 'Тройная энергия', 
       icon: <Flame size={20} />,
-      ...boosts.boost2 
+      cost: 500,
+      pointsPerClick: 10,
+      purchased: boosts.boost2?.purchased || false
     },
     { 
       id: 'boost3', 
-      name: 'Ракетное Топливо', 
-      description: 'Тройная энергия!', 
+      name: 'Тёмный Дух', 
+      description: 'Мощь тьмы', 
       icon: <Rocket size={20} />,
-      ...boosts.boost3 
+      cost: 1500,
+      pointsPerClick: 50,
+      purchased: boosts.boost3?.purchased || false
     },
   ];
   
@@ -98,38 +105,48 @@ const BoostStore: React.FC<BoostStoreProps> = ({ boosts, points, onPurchase }) =
   const premiumBoostItems = [
     { 
       id: 'boost4', 
-      name: 'Космический Драйв', 
-      description: 'Галактическая мощь', 
+      name: 'Ночной Кошмар', 
+      description: 'Страх приносит силу', 
       icon: <Star size={20} />,
-      ...boosts.boost4 
+      cost: 5000,
+      pointsPerClick: 100,
+      purchased: boosts.boost4?.purchased || false
     },
     { 
       id: 'boost5', 
-      name: 'Ультиматум Дринк', 
-      description: 'Выдаёт безумную энергию', 
+      name: 'Эфирный Террор', 
+      description: 'Ужас из бездны', 
       icon: <Diamond size={20} />,
-      ...boosts.boost5 
+      cost: 15000,
+      pointsPerClick: 500,
+      purchased: boosts.boost5?.purchased || false
     },
     { 
       id: 'boost6', 
-      name: 'Нано Форсаж', 
-      description: 'Нанотехнологичный ускоритель', 
+      name: 'Кровавая Луна', 
+      description: 'Тёмная энергия', 
       icon: <Zap size={20} />,
-      ...boosts.boost6 
+      cost: 50000,
+      pointsPerClick: 2000,
+      purchased: boosts.boost6?.purchased || false
     },
     { 
       id: 'boost7', 
-      name: 'Квантовый Драйв', 
-      description: 'Искривляет время и пространство', 
+      name: 'Бездна Отчаяния', 
+      description: 'Пожиратель душ', 
       icon: <Star size={20} />,
-      ...boosts.boost7 
+      cost: 200000,
+      pointsPerClick: 10000,
+      purchased: boosts.boost7?.purchased || false
     },
     { 
       id: 'boost8', 
-      name: 'Сверхновый Импульс', 
-      description: 'Энергия умирающей звезды', 
+      name: 'Пустота Хаоса', 
+      description: 'Разрушение реальности', 
       icon: <Rocket size={20} />,
-      ...boosts.boost8 
+      cost: 1000000,
+      pointsPerClick: 50000,
+      purchased: boosts.boost8?.purchased || false
     },
   ];
   
@@ -146,7 +163,7 @@ const BoostStore: React.FC<BoostStoreProps> = ({ boosts, points, onPurchase }) =
             description={boost.description}
             cost={boost.cost}
             pointsPerClick={boost.pointsPerClick}
-            purchased={boost.purchased || (boosts[boost.id]?.purchased || false)}
+            purchased={boost.purchased}
             affordable={points >= boost.cost}
             onPurchase={onPurchase}
             icon={boost.icon}
@@ -154,18 +171,18 @@ const BoostStore: React.FC<BoostStoreProps> = ({ boosts, points, onPurchase }) =
         ))}
       </div>
       
-      <div className="flex justify-between items-center pt-2 border-t border-blue-800/50">
+      <div className="flex justify-between items-center pt-2 border-t border-white/20">
         <Button 
           onClick={() => setPage(0)}
           disabled={page === 0}
           variant="outline"
-          className={`border-blue-600 ${page === 0 ? 'bg-blue-900/30 text-blue-300' : 'bg-transparent text-blue-400 hover:bg-blue-900/20'}`}
+          className={`border-white/50 ${page === 0 ? 'bg-white/5 text-white/50' : 'bg-transparent text-white hover:bg-white/10'}`}
         >
           <ChevronLeft className="mr-1 h-4 w-4" />
-          Стандартные
+          Обычные
         </Button>
         
-        <div className="text-xs text-blue-400">
+        <div className="text-xs text-white/80">
           {page + 1}/2
         </div>
         
@@ -173,7 +190,7 @@ const BoostStore: React.FC<BoostStoreProps> = ({ boosts, points, onPurchase }) =
           onClick={() => setPage(1)}
           disabled={page === 1}
           variant="outline"
-          className={`border-blue-600 ${page === 1 ? 'bg-blue-900/30 text-blue-300' : 'bg-transparent text-blue-400 hover:bg-blue-900/20'}`}
+          className={`border-white/50 ${page === 1 ? 'bg-white/5 text-white/50' : 'bg-transparent text-white hover:bg-white/10'}`}
         >
           Премиум
           <ChevronRight className="ml-1 h-4 w-4" />
