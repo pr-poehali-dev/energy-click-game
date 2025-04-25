@@ -1,12 +1,28 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState, useEffect } from 'react';
+import Game from '@/components/Game';
+import { toast } from '@/components/ui/use-toast';
 
 const Index = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // Маленькая задержка для плавной анимации загрузки
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+      toast({
+        title: "Игра загружена!",
+        description: "Кликай по энергетику, чтобы заработать очки!",
+        duration: 3000,
+      });
+    }, 600);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
-      </div>
+    <div className={`min-h-screen bg-black transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      <Game />
     </div>
   );
 };
