@@ -6,7 +6,7 @@ import BoostStore from './BoostStore';
 import PointsAnimation from './PointsAnimation';
 import Score from './Score';
 import { toast } from '@/components/ui/use-toast';
-import { Save } from 'lucide-react';
+import { Save, Settings } from 'lucide-react';
 
 interface ClickState {
   points: number;
@@ -49,6 +49,7 @@ const Game = () => {
   const [showAnimation, setShowAnimation] = useState(false);
   const [animationPosition, setAnimationPosition] = useState({ x: 0, y: 0 });
   const [storeOpen, setStoreOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   
   // Сохранение состояния игры
@@ -136,26 +137,46 @@ const Game = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-between py-8 relative overflow-hidden bg-black">
-      {/* Фоновые декорации - новый стиль */}
+      {/* Фоновые декорации - кибер/космический стиль */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* Вращающиеся частицы */}
-        <div className="absolute top-1/4 left-20 w-32 h-32 rounded-full bg-blue-600 opacity-5 animate-pulse blur-3xl"></div>
-        <div className="absolute bottom-1/3 right-20 w-48 h-48 rounded-full bg-blue-400 opacity-5 animate-pulse blur-3xl" style={{animationDelay: '1.5s'}}></div>
+        {/* Мерцающие частицы */}
+        <div className="absolute top-1/4 left-20 w-32 h-32 rounded-full bg-blue-500 opacity-5 animate-pulse blur-3xl"></div>
+        <div className="absolute bottom-1/3 right-20 w-48 h-48 rounded-full bg-purple-500 opacity-5 animate-pulse blur-3xl" style={{animationDelay: '1.5s'}}></div>
+        <div className="absolute top-3/4 left-1/3 w-24 h-24 rounded-full bg-cyan-400 opacity-5 animate-pulse blur-2xl" style={{animationDelay: '0.7s'}}></div>
         
-        {/* Светящиеся линии */}
+        {/* Неоновые сетки и линии */}
         <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-20"></div>
-        <div className="absolute top-0 bottom-0 left-1/4 w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent opacity-10"></div>
-        <div className="absolute top-0 bottom-0 right-1/4 w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent opacity-10"></div>
+        <div className="absolute top-1/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-15"></div>
+        <div className="absolute top-3/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-15"></div>
         
-        {/* Абстрактные формы */}
+        <div className="absolute top-0 bottom-0 left-1/4 w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent opacity-10"></div>
+        <div className="absolute top-0 bottom-0 right-1/4 w-px bg-gradient-to-b from-transparent via-purple-500 to-transparent opacity-10"></div>
+        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-gradient-to-b from-transparent via-cyan-400 to-transparent opacity-10"></div>
+        
+        {/* Абстрактные технологические узоры */}
         <div className="absolute bottom-20 left-10 opacity-10">
-          <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="40" stroke="#33C3F0" strokeWidth="2" />
+          <svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="45" stroke="#33C3F0" strokeWidth="1" />
+            <circle cx="50" cy="50" r="35" stroke="#33C3F0" strokeWidth="0.5" />
+            <circle cx="50" cy="50" r="25" stroke="#33C3F0" strokeWidth="0.5" />
+            <line x1="5" y1="50" x2="95" y2="50" stroke="#33C3F0" strokeWidth="0.5" strokeDasharray="2 4" />
+            <line x1="50" y1="5" x2="50" y2="95" stroke="#33C3F0" strokeWidth="0.5" strokeDasharray="2 4" />
           </svg>
         </div>
         <div className="absolute top-20 right-10 opacity-10">
+          <svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="80" height="80" stroke="#D946EF" strokeWidth="1" />
+            <rect x="25" y="25" width="50" height="50" stroke="#D946EF" strokeWidth="0.5" />
+            <line x1="10" y1="50" x2="90" y2="50" stroke="#D946EF" strokeWidth="0.5" strokeDasharray="2 4" />
+            <line x1="50" y1="10" x2="50" y2="90" stroke="#D946EF" strokeWidth="0.5" strokeDasharray="2 4" />
+          </svg>
+        </div>
+        <div className="absolute bottom-40 right-40 opacity-10">
           <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="20" y="20" width="60" height="60" stroke="#33C3F0" strokeWidth="2" />
+            <polygon points="50,10 90,50 50,90 10,50" stroke="#0EA5E9" strokeWidth="1" />
+            <polygon points="50,30 70,50 50,70 30,50" stroke="#0EA5E9" strokeWidth="0.5" />
+            <line x1="10" y1="50" x2="90" y2="50" stroke="#0EA5E9" strokeWidth="0.5" strokeDasharray="2 4" />
+            <line x1="50" y1="10" x2="50" y2="90" stroke="#0EA5E9" strokeWidth="0.5" strokeDasharray="2 4" />
           </svg>
         </div>
       </div>
@@ -164,15 +185,28 @@ const Game = () => {
       <div className="absolute top-4 left-4 z-20">
         <Button 
           onClick={handleSaveGame}
-          className="bg-blue-700 hover:bg-blue-800 border-2 border-blue-500 flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg hover:shadow-blue-500/20 transition-all"
+          className="bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-800 hover:to-blue-950 border-2 border-blue-500 flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all"
         >
           <Save size={18} />
           Сохранить
         </Button>
       </div>
 
-      {/* Счётчик очков */}
-      <Score points={clickState.points} />
+      {/* Счётчик очков и кнопка настроек */}
+      <div className="fixed top-6 right-6 z-20 flex gap-3 items-center">
+        <Button 
+          onClick={() => setSettingsOpen(true)}
+          className="bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-purple-950 border-2 border-purple-500 rounded-lg p-2 shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all"
+        >
+          <Settings size={20} className="text-purple-100" />
+        </Button>
+
+        <div className="bg-zinc-900/80 border-2 border-blue-600 rounded-lg px-4 py-2 backdrop-blur-sm">
+          <div className="text-xl font-mono font-bold text-blue-400">
+            {clickState.points.toString().padStart(6, '0')}
+          </div>
+        </div>
+      </div>
         
       {/* Анимация очков */}
       {showAnimation && (
@@ -203,11 +237,11 @@ const Game = () => {
         </Button>
       </div>
         
-      {/* Кнопка магазина бустов - новый стиль */}
+      {/* Кнопка магазина бустов - стильный дизайн */}
       <div className="mt-8 mb-4 z-10">
         <Button 
           onClick={() => setStoreOpen(true)}
-          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white rounded-full border-2 border-blue-500 shadow-lg shadow-blue-700/20 hover:shadow-blue-700/40 font-bold text-lg transition-all"
+          className="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-800 hover:from-cyan-700 hover:to-blue-900 text-white rounded-full border-2 border-cyan-500 shadow-lg shadow-cyan-700/20 hover:shadow-cyan-700/40 font-bold text-lg transition-all"
         >
           <span className="mr-2">🛒</span> Купить Нью дринк
         </Button>
@@ -236,6 +270,28 @@ const Game = () => {
               {errorMessage}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Диалог настроек */}
+      <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
+        <DialogContent className="bg-zinc-900 border-purple-600 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-center text-2xl font-bold text-purple-400">
+              Настройки
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="py-4 text-center">
+            <p className="text-gray-300 mb-4">
+              Здесь будут настройки в будущих обновлениях
+            </p>
+            <div className="p-3 rounded-lg border border-purple-600 bg-zinc-800/50">
+              <p className="text-purple-300 font-medium">
+                Разработчик: телеграмм @origcrime
+              </p>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

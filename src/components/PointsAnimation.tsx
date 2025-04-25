@@ -29,7 +29,7 @@ const PointsAnimation: React.FC<PointsAnimationProps> = ({ value, x, y }) => {
       setStyle(prev => ({
         ...prev,
         opacity: 0,
-        transform: 'translateY(-70px) scale(1.2)'
+        transform: 'translateY(-70px) scale(1.5)'
       }));
     }, 50);
     
@@ -38,11 +38,13 @@ const PointsAnimation: React.FC<PointsAnimationProps> = ({ value, x, y }) => {
   
   // Создаем эффект свечения с разными цветами в зависимости от значения
   const getGlowColor = () => {
-    if (value >= 100) return 'purple';
-    if (value >= 50) return 'green';
-    if (value >= 10) return 'yellow';
-    return 'blue';
+    if (value >= 100) return '#8B5CF6'; // фиолетовый
+    if (value >= 50) return '#10B981';  // зеленый
+    if (value >= 10) return '#F59E0B';  // желтый
+    return '#3B82F6';                   // синий
   };
+  
+  const glowColor = getGlowColor();
   
   return (
     <div 
@@ -50,14 +52,15 @@ const PointsAnimation: React.FC<PointsAnimationProps> = ({ value, x, y }) => {
       style={style}
     >
       <span 
-        className={`bg-black/50 px-2 py-1 rounded-full whitespace-nowrap flex items-center justify-center`}
+        className="bg-black/60 px-3 py-1.5 rounded-full whitespace-nowrap flex items-center justify-center border border-opacity-50 backdrop-blur-sm"
         style={{
-          textShadow: `0 0 10px ${getGlowColor()}, 0 0 15px ${getGlowColor()}`,
-          boxShadow: `0 0 10px ${getGlowColor()}80, inset 0 0 5px ${getGlowColor()}40`
+          textShadow: `0 0 10px ${glowColor}, 0 0 15px ${glowColor}`,
+          boxShadow: `0 0 10px ${glowColor}80, inset 0 0 5px ${glowColor}40`,
+          borderColor: glowColor
         }}
       >
-        <span className="text-blue-400 mr-1">+</span>
-        <span className="text-white">{value}</span>
+        <span className="text-blue-400 mr-1.5">+</span>
+        <span className="bg-gradient-to-r from-blue-300 to-blue-500 text-transparent bg-clip-text">{value}</span>
       </span>
     </div>
   );
