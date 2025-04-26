@@ -1,20 +1,25 @@
-
+import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import BoostStore from './BoostStore';
-import { ClickState } from '@/types/gameTypes';
 
 interface StoreDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  clickState: ClickState;
-  errorMessage: string;
+  points: number;
+  boosts: Record<string, {
+    purchased: boolean;
+    cost: number;
+    pointsPerClick: number;
+  }>;
+  errorMessage?: string;
   onPurchase: (boostId: string) => void;
 }
 
 const StoreDialog: React.FC<StoreDialogProps> = ({
   open,
   onOpenChange,
-  clickState,
+  points,
+  boosts,
   errorMessage,
   onPurchase
 }) => {
@@ -31,8 +36,8 @@ const StoreDialog: React.FC<StoreDialogProps> = ({
         </DialogHeader>
         
         <BoostStore 
-          boosts={clickState.boosts} 
-          points={clickState.points} 
+          boosts={boosts} 
+          points={points} 
           onPurchase={onPurchase} 
         />
         
