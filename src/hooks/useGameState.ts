@@ -1,116 +1,140 @@
 
-import { useState, useEffect } from 'react';
-import { ClickState } from '@/types/gameTypes';
-import { toast } from '@/components/ui/use-toast';
+import { useState, useCallback } from 'react';
+import { BoostType } from '@/types/gameTypes';
+import { toast } from 'sonner';
 
-export function useGameState() {
-  const [clickState, setClickState] = useState<ClickState>(() => {
-    // Загрузка сохраненного состояния из localStorage
-    const savedState = localStorage.getItem('clickerGameState');
-    if (savedState) {
-      try {
-        return JSON.parse(savedState);
-      } catch (e) {
-        console.error('Ошибка при загрузке сохранения:', e);
-      }
-    }
-    
-    // Начальное состояние, если нет сохранения
-    return {
-      points: 0,
-      pointsPerClick: 1,
-      boosts: {
-        boost1: { purchased: false, cost: 100, pointsPerClick: 5 },
-        boost2: { purchased: false, cost: 500, pointsPerClick: 10 },
-        boost3: { purchased: false, cost: 1500, pointsPerClick: 50 },
-        boost4: { purchased: false, cost: 5000, pointsPerClick: 100 },
-        boost5: { purchased: false, cost: 15000, pointsPerClick: 500 },
-        boost6: { purchased: false, cost: 50000, pointsPerClick: 2000 },
-        boost7: { purchased: false, cost: 200000, pointsPerClick: 10000 },
-        boost8: { purchased: false, cost: 1000000, pointsPerClick: 50000 },
-        boost9: { purchased: false, cost: 5000000, pointsPerClick: 200000 },
-        boost10: { purchased: false, cost: 25000000, pointsPerClick: 1000000 }
-      }
-    };
+const useGameState = () => {
+  const [score, setScore] = useState<number>(0);
+  const [clickPower, setClickPower] = useState<number>(1);
+  const [autoClickPower, setAutoClickPower] = useState<number>(0);
+  const [boosts, setBoosts] = useState<Record<string, BoostType>>({
+    boost1: { id: 'boost1', name: 'Двойной клик', description: 'Удваивает силу клика', cost: 100, power: 1, purchased: false, type: 'click' },
+    boost2: { id: 'boost2', name: 'Турбо клик', description: 'Утраивает силу клика', cost: 500, power: 2, purchased: false, type: 'click' },
+    boost3: { id: 'boost3', name: 'Мега клик', description: '+5 к силе клика', cost: 1000, power: 5, purchased: false, type: 'click' },
+    boost4: { id: 'boost4', name: 'Ультра клик', description: '+10 к силе клика', cost: 5000, power: 10, purchased: false, type: 'click' },
+    boost5: { id: 'boost5', name: 'Эпический клик', description: '+50 к силе клика', cost: 15000, power: 50, purchased: false, type: 'click' },
+    boost6: { id: 'boost6', name: 'Авто-клик: Новичок', description: '1 клик в секунду', cost: 2000, power: 1, purchased: false, type: 'auto' },
+    boost7: { id: 'boost7', name: 'Авто-клик: Стандарт', description: '5 кликов в секунду', cost: 10000, power: 5, purchased: false, type: 'auto' },
+    boost8: { id: 'boost8', name: 'Авто-клик: Профи', description: '10 кликов в секунду', cost: 50000, power: 10, purchased: false, type: 'auto' },
+    boost9: { id: 'boost9', name: 'Авто-клик: Эксперт', description: '25 кликов в секунду', cost: 100000, power: 25, purchased: false, type: 'auto' },
+    boost10: { id: 'boost10', name: 'Авто-клик: Легенда', description: '50 кликов в секунду', cost: 500000, power: 50, purchased: false, type: 'auto' },
   });
-  
-  // Сохранение состояния игры
-  useEffect(() => {
-    const saveGame = () => {
-      localStorage.setItem('clickerGameState', JSON.stringify(clickState));
-    };
-    
-    // Сохраняем при каждом изменении состояния
-    saveGame();
-    
-    // Также сохраняем при закрытии/обновлении страницы
-    window.addEventListener('beforeunload', saveGame);
-    return () => {
-      window.removeEventListener('beforeunload', saveGame);
-    };
-  }, [clickState]);
-  
-  const handleSaveGame = () => {
-    localStorage.setItem('clickerGameState', JSON.stringify(clickState));
-    toast({
-      title: "Сохранено",
-      description: "Твой прогресс успешно сохранен!",
-      duration: 2000,
-    });
-  };
 
-  const handleClick = () => {
-    // Добавляем очки при клике
-    setClickState(prev => ({
-      ...prev,
-      points: prev.points + prev.pointsPerClick
-    }));
-  };
+  // Увеличение счета
+  const incrementScore = useCallback((amount: number) => {
+    setScore(prev => prev + amount);
+  }, []);
 
-  const purchaseBoost = (boostId: string) => {
-    if (!clickState.boosts[boostId]) {
-      console.error(`Буст ${boostId} не найден`);
-      return { success: false, error: 'Буст не найден' };
+  // Покупка буста
+  const buyBoost = useCallback((boostId: string) => {
+    const boost = boosts[boostId];
+    
+    if (!boost) {
+      toast.error('Буст не найден');
+      return false;
     }
-    
-    const boost = clickState.boosts[boostId];
     
     if (boost.purchased) {
-      console.log(`Буст ${boostId} уже куплен`);
-      return { success: false, error: 'Буст уже куплен' };
+      toast.error('Буст уже куплен');
+      return false;
     }
     
-    if (clickState.points < boost.cost) {
-      return { success: false, error: 'Не хватает очков для покупки' };
+    if (score < boost.cost) {
+      toast.error('Недостаточно очков для покупки');
+      return false;
     }
     
     // Покупка буста
-    setClickState(prev => ({
+    setScore(prev => prev - boost.cost);
+    
+    if (boost.type === 'click') {
+      setClickPower(prev => prev + boost.power);
+    } else if (boost.type === 'auto') {
+      setAutoClickPower(prev => prev + boost.power);
+    }
+    
+    setBoosts(prev => ({
       ...prev,
-      points: prev.points - boost.cost,
-      pointsPerClick: prev.pointsPerClick + boost.pointsPerClick,
-      boosts: {
-        ...prev.boosts,
-        [boostId]: {
-          ...prev.boosts[boostId],
-          purchased: true
-        }
+      [boostId]: {
+        ...prev[boostId],
+        purchased: true
       }
     }));
     
-    toast({
-      title: "Буст куплен!",
-      description: `Теперь за клик ты получаешь +${clickState.pointsPerClick + boost.pointsPerClick} очков!`,
-      duration: 3000,
+    toast.success(`Буст "${boost.name}" куплен!`);
+    return true;
+  }, [boosts, score]);
+
+  // Сброс игры
+  const resetGame = useCallback(() => {
+    setScore(0);
+    setClickPower(1);
+    setAutoClickPower(0);
+    setBoosts(prev => {
+      const resetBoosts: Record<string, BoostType> = {};
+      Object.keys(prev).forEach(key => {
+        resetBoosts[key] = { ...prev[key], purchased: false };
+      });
+      return resetBoosts;
     });
-    
-    return { success: true };
-  };
-  
+    toast.success('Игра сброшена');
+  }, []);
+
+  // Сохранение игры
+  const saveGame = useCallback(() => {
+    const gameState = {
+      score,
+      clickPower,
+      autoClickPower,
+      boosts
+    };
+    localStorage.setItem('clicker-game', JSON.stringify(gameState));
+  }, [score, clickPower, autoClickPower, boosts]);
+
+  // Загрузка игры
+  const loadGame = useCallback(() => {
+    const savedState = localStorage.getItem('clicker-game');
+    if (savedState) {
+      try {
+        const parsedState = JSON.parse(savedState);
+        setScore(parsedState.score || 0);
+        setClickPower(parsedState.clickPower || 1);
+        setAutoClickPower(parsedState.autoClickPower || 0);
+        if (parsedState.boosts) {
+          setBoosts(prev => {
+            const loadedBoosts: Record<string, BoostType> = {};
+            Object.keys(prev).forEach(key => {
+              if (parsedState.boosts[key]) {
+                loadedBoosts[key] = {
+                  ...prev[key],
+                  purchased: parsedState.boosts[key].purchased || false
+                };
+              } else {
+                loadedBoosts[key] = prev[key];
+              }
+            });
+            return loadedBoosts;
+          });
+        }
+      } catch (e) {
+        console.error('Ошибка при загрузке сохраненной игры:', e);
+      }
+    }
+  }, []);
+
   return {
-    clickState,
-    handleClick,
-    purchaseBoost,
-    handleSaveGame
+    score,
+    incrementScore,
+    clickPower,
+    autoClickPower,
+    boosts,
+    buyBoost,
+    resetGame,
+    loadGame,
+    saveGame
   };
-}
+};
+
+// Экспортируем как именованный и дефолтный экспорт
+export { useGameState };
+export default useGameState;
