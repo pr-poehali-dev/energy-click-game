@@ -88,11 +88,9 @@ const Game = () => {
       <GameBackground moveOffset={moveOffset} />
 
       <GameHeader 
-        score={score} 
-        clickPower={clickPower}
-        autoClickPower={autoClickPower}
-        onSettingsClick={() => setIsSettingsOpen(true)}
+        points={score} 
         moveOffset={moveOffset}
+        onOpenSettings={() => setIsSettingsOpen(true)}
       />
 
       <main className="flex-1 flex flex-col items-center justify-center relative">

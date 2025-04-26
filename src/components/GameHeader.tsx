@@ -1,19 +1,17 @@
 
 import { Button } from '@/components/ui/button';
-import { Save, Settings } from 'lucide-react';
-import { ClickState } from '@/types/gameTypes';
+import { Settings } from 'lucide-react';
 
 interface GameHeaderProps {
   points: number;
   moveOffset: { x: number; y: number };
-  onSaveGame: () => void;
+  onSaveGame?: () => void;
   onOpenSettings: () => void;
 }
 
 const GameHeader: React.FC<GameHeaderProps> = ({
   points,
   moveOffset,
-  onSaveGame,
   onOpenSettings
 }) => {
   return (
@@ -24,16 +22,6 @@ const GameHeader: React.FC<GameHeaderProps> = ({
         transition: 'transform 0.2s ease-out'
       }}
     >
-      {/* Кнопка сохранения */}
-      <Button 
-        onClick={onSaveGame}
-        variant="outline"
-        className="border-white/50 hover:border-white bg-transparent text-white hover:bg-white/10 flex items-center gap-2 px-3 py-2 shadow-[0_0_15px_rgba(255,255,255,0.2)]"
-      >
-        <Save size={16} />
-        Сохранить
-      </Button>
-      
       {/* Счетчик и кнопка настроек */}
       <div className="flex items-center gap-3">
         <Button 
