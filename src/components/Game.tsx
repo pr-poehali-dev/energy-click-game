@@ -8,7 +8,7 @@ import StoreDialog from './StoreDialog';
 import SettingsDialog from './SettingsDialog';
 import GameBackground from './GameBackground';
 import PointsAnimation from './PointsAnimation';
-import useMouseMove from '@/hooks/useMouseMove';
+import { useMouseMove } from '@/hooks/useMouseMove'; // Используем именованный импорт
 import { useGameState } from '@/hooks/useGameState'; // Используем именованный импорт
 import { AnimationItem, ClickAnimationType } from '@/types/gameTypes';
 

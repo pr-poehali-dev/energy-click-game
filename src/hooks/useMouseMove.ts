@@ -26,3 +26,6 @@ export function useMouseMove(): MoveOffset {
   
   return moveOffset;
 }
+
+// Добавляем экспорт по умолчанию для совместимости
+export default useMouseMove;
